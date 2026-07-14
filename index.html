@@ -1195,8 +1195,7 @@ Email
     <p>I'm always open to discussing new opportunities, collaborations, or innovative ideas. Fill out the form below and I'll receive your message directly in my inbox.</p>
   </div>
 
-    <form action="https://formsubmit.co/bhosalejanu07@gmail.com" method="POST">
-
+    <form id="contactForm" action="https://formsubmit.co/ajax/bhosalejanu07@gmail.com" method="POST">
     <!-- Disable Captcha -->
     <input type="hidden" name="_captcha" value="false">
 
@@ -1296,43 +1295,52 @@ Email
     });
   }
 
-  const contactForm = document.getElementById("contactForm");
-  const successMessage = document.getElementById("success-message");
 
-  if(contactForm){
+// ---------- Contact Form Submission ----------
 
-    contactForm.addEventListener("submit", async function(e){
+const contactForm = document.getElementById("contactForm");
+const successMessage = document.getElementById("success-message");
+
+if (contactForm && successMessage) {
+
+    contactForm.addEventListener("submit", async function (e) {
 
         e.preventDefault();
 
-        try{
+        try {
 
-            const response = await fetch(contactForm.action,{
-    method:"POST",
-    body:formData,
-    headers:{
-        "Accept":"application/json"
-    }
-});
+            const formData = new FormData(contactForm);
 
-            if(response.ok){
+            const response = await fetch(contactForm.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok) {
 
                 contactForm.reset();
+                successMessage.style.display = "block";
 
-                successMessage.style.display="block";
+                setTimeout(() => {
+                    successMessage.style.display = "none";
+                }, 5000);
 
-            }else{
+            } else {
 
-    const error = await response.text();
-    console.log(error);
+                const error = await response.text();
+                console.error(error);
 
-    alert("Unable to send message.");
+                alert("Unable to send message.");
 
-}
+            }
 
-        }catch(err){
+        } catch (err) {
 
-            console.log(err);
+            console.error(err);
+            alert("Something went wrong. Please try again.");
 
         }
 
