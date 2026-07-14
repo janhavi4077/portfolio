@@ -1195,11 +1195,17 @@ Email
     <p>I'm always open to discussing new opportunities, collaborations, or innovative ideas. Fill out the form below and I'll receive your message directly in my inbox.</p>
   </div>
 
-    <form id="contactForm" action="https://formsubmit.co/ajax/bhosalejanu07@gmail.com" method="POST">
+    <form id="contactForm"
+      action="https://formsubmit.co/bhosalejanu07@gmail.com"
+      method="POST">
     <!-- Disable Captcha -->
     <input type="hidden" name="_captcha" value="false">
 
     <!-- Email Subject -->
+    <input type="hidden" name="_subject" value="New Portfolio Contact Message">
+
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_subject" value="New Portfolio Contact Message">
 
 
@@ -1298,55 +1304,55 @@ Email
 
 // ---------- Contact Form Submission ----------
 
-const contactForm = document.getElementById("contactForm");
-const successMessage = document.getElementById("success-message");
+// const contactForm = document.getElementById("contactForm");
+// const successMessage = document.getElementById("success-message");
 
-if (contactForm && successMessage) {
+// if (contactForm && successMessage) {
 
-    contactForm.addEventListener("submit", async function (e) {
+//     contactForm.addEventListener("submit", async function (e) {
 
-        e.preventDefault();
+//         e.preventDefault();
 
-        try {
+//         try {
 
-            const formData = new FormData(contactForm);
+//             const formData = new FormData(contactForm);
 
-            const response = await fetch(contactForm.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Accept": "application/json"
-                }
-            });
+//             const response = await fetch(contactForm.action, {
+//                 method: "POST",
+//                 body: formData,
+//                 headers: {
+//                     "Accept": "application/json"
+//                 }
+//             });
 
-            if (response.ok) {
+//             if (response.ok) {
 
-                contactForm.reset();
-                successMessage.style.display = "block";
+//                 contactForm.reset();
+//                 successMessage.style.display = "block";
 
-                setTimeout(() => {
-                    successMessage.style.display = "none";
-                }, 5000);
+//                 setTimeout(() => {
+//                     successMessage.style.display = "none";
+//                 }, 5000);
 
-            } else {
+//             } else {
 
-                const error = await response.text();
-                console.error(error);
+//                 const error = await response.text();
+//                 console.error(error);
 
-                alert("Unable to send message.");
+//                 alert("Unable to send message.");
 
-            }
+//             }
 
-        } catch (err) {
+//         } catch (err) {
 
-            console.error(err);
-            alert("Something went wrong. Please try again.");
+//             console.error(err);
+//             alert("Something went wrong. Please try again.");
 
-        }
+//         }
 
-    });
+//     });
 
-}
+// }
 
   // scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
