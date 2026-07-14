@@ -1195,57 +1195,36 @@ Email
     <p>I'm always open to discussing new opportunities, collaborations, or innovative ideas. Fill out the form below and I'll receive your message directly in my inbox.</p>
   </div>
 
-    <form id="contactForm"
-      action="https://formsubmit.co/bhosalejanu07@gmail.com"
-      method="POST">
-    <!-- Disable Captcha -->
-    <input type="hidden" name="_captcha" value="false">
-
-    <!-- Email Subject -->
-    <input type="hidden" name="_subject" value="New Portfolio Contact Message">
+    <form id="contact-form">
 
     <input type="hidden" name="_captcha" value="false">
+
     <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_subject" value="New Portfolio Contact Message">
 
+    <input type="hidden" name="_subject" value="Portfolio Contact">  
 
     <div class="form-row">
 
-      <div class="field">
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          required>
-      </div>
+        <div class="field">
+            <label>Name</label>
+            <input type="text" id="form-name" name="name" placeholder="Your Name" required>
+        </div>
 
-      <div class="field">
-        <label>Email</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          required>
-      </div>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" id="form-email" name="email" placeholder="Your Email" required>
+        </div>
 
     </div>
 
     <div class="field">
-      <label>Subject</label>
-      <input
-        type="text"
-        name="subject"
-        placeholder="Subject">
+        <label>Subject</label>
+        <input type="text" id="form-subject" name="subject" placeholder="Subject">
     </div>
 
     <div class="field">
-      <label>Message</label>
-      <textarea
-        name="message"
-        rows="6"
-        placeholder="Write your message..."
-        required></textarea>
+        <label>Message</label>
+        <textarea id="form-message" name="message" rows="6" placeholder="Write your message..." required></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">
@@ -1253,21 +1232,9 @@ Email
         Send Message
     </button>
 
-    <div id="success-message" style="display:none;margin-top:20px;text-align:center;">
+    <div class="form-status-container" id="status-panel"></div>
 
-    <h3 style="color:#8b5cf6;">
-        ✅ Thank You!
-    </h3>
-
-    <p style="margin-top:10px;color:#cfcfe8;">
-        Your message has been sent successfully.
-        <br>
-        I appreciate you reaching out and will get back to you as soon as possible.
-    </p>
-
-</div>
-
-  </form>
+</form>
 
 </div>
 
@@ -1304,55 +1271,91 @@ Email
 
 // ---------- Contact Form Submission ----------
 
-// const contactForm = document.getElementById("contactForm");
-// const successMessage = document.getElementById("success-message");
+// ---------- Contact Form Submission ----------
 
-// if (contactForm && successMessage) {
+const contactForm = document.getElementById('contact-form');
+const statusPanel = document.getElementById('status-panel');
 
-//     contactForm.addEventListener("submit", async function (e) {
+if (contactForm && statusPanel) {
 
-//         e.preventDefault();
+    contactForm.addEventListener('submit', (e) => {
 
-//         try {
+        e.preventDefault();
 
-//             const formData = new FormData(contactForm);
+        statusPanel.className = 'form-status-container loading';
+        statusPanel.innerText = 'Sending your message...';
 
-//             const response = await fetch(contactForm.action, {
-//                 method: "POST",
-//                 body: formData,
-//                 headers: {
-//                     "Accept": "application/json"
-//                 }
-//             });
+        const payload = {
 
-//             if (response.ok) {
+            name: document.getElementById('form-name').value,
 
-//                 contactForm.reset();
-//                 successMessage.style.display = "block";
+            email: document.getElementById('form-email').value,
 
-//                 setTimeout(() => {
-//                     successMessage.style.display = "none";
-//                 }, 5000);
+            subject: document.getElementById('form-subject').value,
 
-//             } else {
+            message: document.getElementById('form-message').value
 
-//                 const error = await response.text();
-//                 console.error(error);
+        };
 
-//                 alert("Unable to send message.");
+        fetch("https://formsubmit.co/ajax/bhosalejanu07@gmail.com", {
 
-//             }
+            method: "POST",
 
-//         } catch (err) {
+            headers: {
 
-//             console.error(err);
-//             alert("Something went wrong. Please try again.");
+                "Content-Type": "application/json",
 
-//         }
+                "Accept": "application/json"
 
-//     });
+            },
 
-// }
+            body: JSON.stringify(payload)
+
+        })
+
+        .then(async response => {
+
+    console.log("Status:", response.status);
+
+    const data = await response.text();
+
+    console.log("Response:", data);
+
+    if(response.ok){
+
+        return data;
+
+    }
+
+    throw new Error(data);
+
+})
+
+        .then(() => {
+
+            statusPanel.className = 'form-status-container success';
+
+            statusPanel.innerHTML =
+                "✅ Thank you for reaching out! Your message has been sent successfully. I'll get back to you as soon as possible.";
+
+            contactForm.reset();
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            statusPanel.className = 'form-status-container error';
+
+            statusPanel.innerHTML =
+                "❌ Unable to send your message. Please contact me directly via email.";
+
+        });
+
+    });
+
+}
 
   // scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
