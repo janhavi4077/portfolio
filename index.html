@@ -819,6 +819,39 @@ margin-bottom:10px;
     margin-top: 4px;
   }
 
+  /* status panel shown under the contact form after submit */
+  .form-status-container{
+    display: none;
+    margin-top: 16px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    text-align: left;
+  }
+  .form-status-container.loading{
+    display: block;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+  }
+  .form-status-container.success{
+    display: block;
+    color: #b7f5d1;
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.35);
+  }
+  .form-status-container.error{
+    display: block;
+    color: #f7c2c2;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.35);
+  }
+  .form-status-container a{
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
   @media (max-width: 620px){
     .form-row{ grid-template-columns: 1fr; }
     .contact-form-card{ padding: 30px 26px; }
@@ -1227,7 +1260,7 @@ Email
         <textarea id="form-message" name="message" rows="6" placeholder="Write your message..." required></textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary form-submit">
         <i class="fa-solid fa-paper-plane"></i>
         Send Message
     </button>
@@ -1268,94 +1301,67 @@ Email
     });
   }
 
+  // ---------- Contact Form Submission ----------
+  const contactForm = document.getElementById('contact-form');
+  const statusPanel = document.getElementById('status-panel');
 
-// ---------- Contact Form Submission ----------
-
-// ---------- Contact Form Submission ----------
-
-const contactForm = document.getElementById('contact-form');
-const statusPanel = document.getElementById('status-panel');
-
-if (contactForm && statusPanel) {
+  if (contactForm && statusPanel) {
 
     contactForm.addEventListener('submit', (e) => {
-
         e.preventDefault();
+
+        // basic client-side guard so we don't fire empty submits
+        if (!contactForm.checkValidity()) {
+            contactForm.reportValidity();
+            return;
+        }
 
         statusPanel.className = 'form-status-container loading';
         statusPanel.innerText = 'Sending your message...';
 
         const payload = {
-
             name: document.getElementById('form-name').value,
-
             email: document.getElementById('form-email').value,
-
-            subject: document.getElementById('form-subject').value,
-
-            message: document.getElementById('form-message').value
-
+            subject: document.getElementById('form-subject').value || 'Portfolio Contact',
+            message: document.getElementById('form-message').value,
+            _subject: "New portfolio message from " + document.getElementById('form-name').value,
+            _captcha: "false",
+            _template: "table"
         };
 
         fetch("https://formsubmit.co/ajax/bhosalejanu07@gmail.com", {
-
             method: "POST",
-
             headers: {
-
                 "Content-Type": "application/json",
-
                 "Accept": "application/json"
-
             },
-
             body: JSON.stringify(payload)
-
         })
-
         .then(async response => {
+            let data = {};
+            try { data = await response.json(); } catch (_) { /* non-JSON response */ }
 
-    console.log("Status:", response.status);
+            // FormSubmit returns success as the string "true" (not boolean true)
+            const ok = response.ok && (data.success === "true" || data.success === true);
 
-    const data = await response.text();
-
-    console.log("Response:", data);
-
-    if(response.ok){
-
-        return data;
-
-    }
-
-    throw new Error(data);
-
-})
-
-        .then(() => {
-
-            statusPanel.className = 'form-status-container success';
-
-            statusPanel.innerHTML =
-                "✅ Thank you for reaching out! Your message has been sent successfully. I'll get back to you as soon as possible.";
-
-            contactForm.reset();
-
+            if (ok) {
+                statusPanel.className = 'form-status-container success';
+                statusPanel.innerHTML =
+                    "✅ Thank you for reaching out! Your message has been sent successfully. I'll get back to you as soon as possible.";
+                contactForm.reset();
+            } else {
+                throw new Error((data && data.message) || 'Submission was not confirmed by the server.');
+            }
         })
-
         .catch(error => {
-
             console.error(error);
-
             statusPanel.className = 'form-status-container error';
-
             statusPanel.innerHTML =
-                "❌ Unable to send your message. Please contact me directly via email.";
-
+                "❌ Unable to send your message right now. Please email me directly at " +
+                "<a href=\"mailto:bhosalejanu07@gmail.com\">bhosalejanu07@gmail.com</a>.";
         });
-
     });
-
-}
+  }
 
   // scroll reveal
   const revealEls = document.querySelectorAll('.reveal');
