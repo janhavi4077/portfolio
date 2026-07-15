@@ -40,6 +40,8 @@
     position: relative;
   }
 
+  body.nav-open{ overflow: hidden; }
+
   /* grain texture overlay */
   body::before{
     content:"";
@@ -292,8 +294,9 @@ margin-bottom:10px;
       gap: 2px;
       padding: 10px;
       border-radius: 18px;
-      background: linear-gradient(155deg, var(--glass-strong), var(--glass) 60%);
+      background: linear-gradient(155deg, #16141d 0%, #0c0b11 60%, #08070c 100%);
       border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 50px -15px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.06) inset;
       backdrop-filter: blur(22px) saturate(140%);
       -webkit-backdrop-filter: blur(22px) saturate(140%);
       opacity: 0;
@@ -918,9 +921,9 @@ Passionate about transforming data into intelligent solutions through Machine Le
       <a href="#contact" class="btn btn-ghost">Get in touch</a>
     </div>
     <div class="fact-strip">
-      <span>Kolhapur, Maharashtra</span>
       <span>B.Tech CSE (Data Science) · 2026</span>
       <span>CGPA 8.20</span>
+      <span>Kolhapur, Maharashtra</span>
     </div>
     <div class="social-row">
       <a href="https://github.com/janhavi4077" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub" title="GitHub">
@@ -1284,12 +1287,14 @@ Email
       const isOpen = navLinks.classList.toggle('open');
       navToggle.classList.toggle('open', isOpen);
       navToggle.setAttribute('aria-expanded', isOpen);
+      document.body.classList.toggle('nav-open', isOpen);
     });
     navLinks.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         navLinks.classList.remove('open');
         navToggle.classList.remove('open');
         navToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('nav-open');
       });
     });
     document.addEventListener('click', (e) => {
@@ -1297,6 +1302,7 @@ Email
         navLinks.classList.remove('open');
         navToggle.classList.remove('open');
         navToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('nav-open');
       }
     });
   }
